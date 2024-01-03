@@ -20,11 +20,10 @@ const initialState: FormState = {
 type FormLayoutProps = {
   onSubmit: (state: FormState) => void
   helperText: React.ReactNode;
-  buttonText: string;
 }
-const FormLayout: FC<FormLayoutProps> = ({ onSubmit, helperText, buttonText}) => {
-  const { data: session } = useSession();
+const FormLayout: FC<FormLayoutProps> = ({ onSubmit, helperText}) => {
   const [state, setState] = useState(initialState)
+  const isDisabled = !state.email || !state.password
 
   const _onSubmit = useCallback((event: FormEvent) => {
     event.preventDefault()
@@ -36,16 +35,6 @@ const FormLayout: FC<FormLayoutProps> = ({ onSubmit, helperText, buttonText}) =>
     setState((prevState) => ({ ...prevState, [event.target.name]: event.target.value }));
   }, []);
 
-  useLayoutEffect(() => {
-    if (session) {
-      redirect(Routes.HOME)
-    }
-  }, [session])
-
-  if (session) {
-    return null;
-  }
-
   return (
     <div className='flex justify-around pt-[150px] items-center'>
       <form onSubmit={_onSubmit} className='text-center flex flex-col gap-8'>
@@ -53,7 +42,7 @@ const FormLayout: FC<FormLayoutProps> = ({ onSubmit, helperText, buttonText}) =>
         <div className='flex flex-col justify-center w-[350px] mx-auto gap-2'>
           <Input placeholder='Email' id='email' type='email' name='email' onChange={handleChange} value={state.email}/>
           <Input placeholder='Password' id='password' type='password' name='password' onChange={handleChange} value={state.password}/>
-          <button type='submit' className='bg-teal-300 h-12 rounded-lg'>{buttonText}</button>
+          <button type='submit' disabled={isDisabled} className={`${isDisabled ? 'bg-gray-400' : 'bg-teal-300'} h-12 rounded-lg`}>Submit</button>
         </div>
         <div>
           {helperText}
