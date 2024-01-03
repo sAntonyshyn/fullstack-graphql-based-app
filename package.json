@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
-    "test playwright": "playwright test"
+    "test": "jest --verbose ./components",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@apollo/client": "^3.8.8",
