@@ -5,7 +5,52 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import DetailsBlock from "@/components/details-block";
 
-export default function Home() {
+const query = gql`
+  query getLaunches($limit: Int, $offset: Int) {
+  launches(limit: $limit, offset: $offset) {
+    mission_name
+    id
+  }
+}
+`
+
+interface ILaunch {
+  id: string;
+  mission_name: string;
+  __typename: string;
+}
+
+const SIZE = 50;
+const Home = () => {
+  const { data, loading, error, fetchMore } = useQuery<{launches: ILaunch[]}>(query, {
+    variables: { limit: SIZE, offset: 0 },
+  });
+  const [itemId, setItemId] = useState('')
+
+  const handleScroll = ({ currentTarget }: React.UIEvent<HTMLUListElement, UIEvent>, onLoadMore: () => void) => {
+    if (
+      currentTarget.scrollTop + currentTarget.clientHeight >=
+      currentTarget.scrollHeight - 50
+    ) {
+      onLoadMore();
+    }
+  };
+
+  const onLoadMore = useCallback(() => {
+    if (!data) return;
+
+    fetchMore({
+      variables: {
+        offset: data.launches.length
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev;
+        return Object.assign({}, prev, {
+          launches: [...prev.launches, ...fetchMoreResult.launches]
+        });
+      }
+    })
+  }, [data, fetchMore])
   return (
     <div className="h-[calc(100%-80px)] p-8">
       <div className="h-[100%] flex gap-8">
@@ -37,8 +82,9 @@ export default function Home() {
           )}
         </div>
       </div>
-
     </div>
   )
 }
+
+export default Home
 

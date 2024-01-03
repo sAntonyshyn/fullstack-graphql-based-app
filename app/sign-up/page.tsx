@@ -4,7 +4,7 @@ import React, { useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import FormLayout, {FormState} from "@/components/form-layout";
-import {Routes} from "@/constants/routes";
+import { Routes } from "@/constants/routes";
 
 const SignUp = () => {
   const router = useRouter()
@@ -20,8 +20,8 @@ const SignUp = () => {
     });
     const res = await data.json();
 
-    if (res.ok) {
-      return router.refresh()
+    if (res.user) {
+      router.push(Routes.LOGIN)
     }
 
     console.log(res);

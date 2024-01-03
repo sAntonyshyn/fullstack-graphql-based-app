@@ -1,7 +1,7 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import React, {FC, FormEvent, useCallback, useState} from 'react'
+import React, { FC, FormEvent, useCallback, useLayoutEffect, useState } from 'react'
 import Image from 'next/image'
 import Input from "@/components/input";
 import { redirect } from "next/navigation";
@@ -23,7 +23,7 @@ type FormLayoutProps = {
   buttonText: string;
 }
 const FormLayout: FC<FormLayoutProps> = ({ onSubmit, helperText, buttonText}) => {
-  const { data: session, ...rest } = useSession();
+  const { data: session } = useSession();
   const [state, setState] = useState(initialState)
 
   const _onSubmit = useCallback((event: FormEvent) => {
@@ -36,8 +36,14 @@ const FormLayout: FC<FormLayoutProps> = ({ onSubmit, helperText, buttonText}) =>
     setState((prevState) => ({ ...prevState, [event.target.name]: event.target.value }));
   }, []);
 
+  useLayoutEffect(() => {
+    if (session) {
+      redirect(Routes.HOME)
+    }
+  }, [session])
+
   if (session) {
-    redirect(Routes.HOME)
+    return null;
   }
 
   return (
