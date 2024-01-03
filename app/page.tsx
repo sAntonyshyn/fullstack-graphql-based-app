@@ -4,6 +4,7 @@ import React, {useCallback, useState} from "react";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import DetailsBlock from "@/components/details-block";
+import Loading from "@/components/loading";
 
 const query = gql`
   query getLaunches($limit: Int, $offset: Int) {
@@ -24,6 +25,7 @@ const SIZE = 50;
 const Home = () => {
   const { data, loading, error, fetchMore } = useQuery<{launches: ILaunch[]}>(query, {
     variables: { limit: SIZE, offset: 0 },
+    fetchPolicy: 'cache-and-network',
   });
   const [itemId, setItemId] = useState('')
 
@@ -57,10 +59,10 @@ const Home = () => {
         className="text-center mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
         Space X launches
       </h1>
-      <div className="h-[100%] flex gap-8">
-        <div className="flex-1 flex-shrink-2 flex-grow-1 text-center border-2 border-solid border-green-500">
+      <div className="h-[calc(100%-50px)] flex gap-8">
+        <div className="flex-1 flex-shrink-2 flex-grow-1 text-center border-2 border-blue-500 rounded-lg">
           {error && <p>Something went wrong!</p>}
-          {loading && !data && <p>Loading...</p>}
+          {loading && !data && <div className="relative h-[100%]"><Loading/></div>}
           {data && <ul
               className="h-[100%] overflow-auto flex flex-col"
               onScroll={e => handleScroll(e, onLoadMore)}
@@ -70,7 +72,7 @@ const Home = () => {
               <li
                 key={item.id}
                 onClick={() => setItemId(item.id)}
-                className={`flex gap-2 justify-center cursor-pointer min-h-[30px] items-center ${isSelected ? 'bg-orange-400' : ''}`}
+                className={`flex gap-2 justify-center cursor-pointer min-h-[30px] items-center ${isSelected ? 'bg-blue-500' : 'text-gray-500'}`}
               >
                 <div>{item.mission_name}</div>
               </li>
@@ -78,11 +80,9 @@ const Home = () => {
           })}
           </ul>}
         </div>
-        <div className="flex-1 flex-shrink-2 flex-grow-1 text-center border-2 border-solid border-green-500">
+        <div className="flex-1 flex-shrink-2 flex-grow-1 text-center border-2 border-blue-500 rounded-lg">
           {itemId ? <DetailsBlock id={itemId}/> : (
-            <span className="flex justify-center h-full">
-              Please select one of the items to see the details!
-            </span>
+            <h5 className="flex justify-center items-center h-full text-xl font-bold dark:text-white">Please select one of the items to see the details!</h5>
           )}
         </div>
       </div>

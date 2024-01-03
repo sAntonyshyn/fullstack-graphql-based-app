@@ -25,8 +25,6 @@ const SignUp = () => {
     if (res.user) {
       router.push(Routes.LOGIN)
     }
-
-    console.log(res);
   }, [router]);
 
 
