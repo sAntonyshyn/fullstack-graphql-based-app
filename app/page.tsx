@@ -53,6 +53,10 @@ const Home = () => {
   }, [data, fetchMore])
   return (
     <div className="h-[calc(100%-80px)] p-8">
+      <h1
+        className="text-center mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+        Space X launches
+      </h1>
       <div className="h-[100%] flex gap-8">
         <div className="flex-1 flex-shrink-2 flex-grow-1 text-center border-2 border-solid border-green-500">
           {error && <p>Something went wrong!</p>}
@@ -75,7 +79,7 @@ const Home = () => {
           </ul>}
         </div>
         <div className="flex-1 flex-shrink-2 flex-grow-1 text-center border-2 border-solid border-green-500">
-          {itemId ? <DetailsBlock id={itemId} /> : (
+          {itemId ? <DetailsBlock id={itemId}/> : (
             <span className="flex justify-center h-full">
               Please select one of the items to see the details!
             </span>
